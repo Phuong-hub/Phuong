@@ -1,0 +1,40 @@
+check size of archive log 
+
+SQL> show parameter db_recovery_file_dest_size   -- check size of archive log 
+
+NAME                                 TYPE        VALUE
+------------------------------------ ----------- ------------------------------
+db_recovery_file_dest_size           big integer 125G
+
+
+
+CHECK ARCHIVE LOG SIZE FIRST 
+THEN RUN TO EXTEND OR INCREASE LOG SIZE: db_recovery_file_dest_size
+
+SQL> archive log list;
+
+Now, note that you can find archive destinations if you are using a destination of USE_DB_RECOVERY_FILE_DEST by:
+--LOG LOCATION:
+
+SQL> show parameter db_recovery_file_dest;    -- SHOW LOACRION OF LOG
+
+The next step in resolving ORA-00257 is to find out 
+what value is being used for db_recovery_file_dest_size, use:
+-- SIZE OF LOG USE
+SQL> SELECT * FROM V$RECOVERY_FILE_DEST;
+
+
+
+RUN TO RESIZE INCREASE db_recovery_file_dest_size
+The Arkema server full archive log and alert on Centreon
+after check size of log and increase  size from 12 -- to 24G (take note)
+SQL> alter system set db_recovery_file_dest_size=12g -----run this command 
+
+SQL> alter system set db_recovery_file_dest_size=20g scope=both;  ----===> INCREASE SIZE ARCHIVE LOG DEST
+
+SQL> alter system set db_recovery_file_dest_size=20g -----run this command 
+
+INCREASE SIZE ARCHIVE LOG DEST
+
+MORE NOTE: 
+ALSO REFER TO FILE FULL ARCHIVE LOG ASS SPACE 
