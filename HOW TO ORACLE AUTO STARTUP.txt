@@ -1,0 +1,84 @@
+
+THE STEP 1:
+In the file cat /etc/oratab 
+see the line with content as " 
+orcl:/u01/app/oracle/product/19.3.0/dbhome_1:N   -----> change to Y
+
+
+oracle@oracle19c ~]$ cat /etc/oratab
+# This file is used by ORACLE utilities.  It is created by root.sh
+# and updated by either Database Configuration Assistant while creating
+# a database or ASM Configuration Assistant while creating ASM instance.
+
+# A colon, ':', is used as the field terminator.  A new line terminates
+# the entry.  Lines beginning with a pound sign, '#', are comments.
+#
+# Entries are of the form:
+#   $ORACLE_SID:$ORACLE_HOME:<N|Y>:
+#
+# The first and second fields are the system identifier and home
+# directory of the database respectively.  The third field indicates
+# to the dbstart utility that the database should , "Y", or should not,
+# "N", be brought up at system boot time.
+#
+# Multiple entries with the same $ORACLE_SID are not allowed.
+#
+#
+orcl:/u01/app/oracle/product/19.3.0/dbhome_1:Y  -------> The line has been change to : Y 
+
+
+
+STEP 2 : CREATE SERVICE FILE FRO ORACLE AUTO START WITH SYSTEMD    ====>  Tạo file service để Oracle auto start bằng systemd
+
+Use root account
+# su -        ======> switch to root account
+
+
+
+# vi /etc/systemd/system/oracle.service
+
+[Unit]
+Description=Oracle Database Service
+After=network.target
+
+[Service]
+Type=forking
+User=oracle
+Group=oinstall
+ExecStart=/u01/app/oracle/product/19.3.0/dbhome_1/bin/dbstart /u01/app/oracle/product/19.3.0/dbhome_1
+ExecStop=/u01/app/oracle/product/19.3.0/dbhome_1/bin/dbshut /u01/app/oracle/product/19.3.0/dbhome_1
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+
+
+Notes: 
+class path shoud be the ORACLE_HOME 
+đường dẫn /u01/app/oracle/product/19.3.0/dbhome_1 phải đúng với ORACLE_HOME
+
+
+
+Referencd for scripts 
+-------------------------------------------------------------------------------------------------------
+[Unit]
+Description=Oracle Database Service
+After=network.target
+
+[Service]
+Type=forking
+User=oracle
+Group=oinstall
+ExecStart=/u01/app/oracle/product/19.3.0/dbhome_1/bin/dbstart /u01/app/oracle/product/19.3.0/dbhome_1
+ExecStop=/u01/app/oracle/product/19.3.0/dbhome_1/bin/dbshut /u01/app/oracle/product/19.3.0/dbhome_1
+Restart=no
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target
+---------------------------------------------------------------------------------------------------------
+
+
+
+
+
